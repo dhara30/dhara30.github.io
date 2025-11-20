@@ -134,6 +134,13 @@ textarea:focus {
     text-align: center;
 }
 
+.qr-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+}
+
 .qr-code {
     margin: 2rem 0;
     border: 10px solid var(--primary-color);
@@ -153,4 +160,5 @@ textarea:focus {
 
 .download-link:hover {
     border-bottom-color: var(--secondary-color);
+
 }
