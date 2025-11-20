@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Are Invited !</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <script src="static/js/qrcode.min.js"></script>
+</head>
+
+<body>
+    <div class="container" id="form-container">
+        <header>
+            <img src="static/logo.png" alt="Logo" class="app-logo">
+            <h1>You Are Invited !</h1>
+            <p>Create your aesthetic event invitation</p>
+        </header>
+
+        <form id="eventForm" onsubmit="handleFormSubmit(event)">
+            <!-- Event Type Selection -->
+            <div class="form-group">
+                <label for="event_type">Event Type <span class="required">*</span></label>
+                <select name="event_type" id="event_type" required onchange="showFields()">
+                    <option value="" disabled selected>Select an event type</option>
+                    <option value="Corporate">Corporate Event</option>
+                    <option value="Wedding">Wedding</option>
+                    <option value="Birthday">Birthday</option>
+                    <option value="Concert">Concert / Performance</option>
+                    <option value="Online">Online / Hybrid Event</option>
+                </select>
+            </div>
+
+            <!-- Common Fields -->
+            <div class="form-group">
+                <label for="event_date">Date & Time <span class="required">*</span></label>
+                <input type="datetime-local" name="event_date" id="event_date" required>
+            </div>
+
+            <!-- Corporate Fields -->
+            <div id="Corporate" class="specific-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="company_name">Company Name</label>
+                    <input type="text" name="company_name" id="company_name" placeholder="Host company label">
+                </div>
+                <div class="form-group">
+                    <label for="speaker_names">Speaker Names</label>
+                    <textarea name="speaker_names" id="speaker_names" placeholder="Presenters list"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="registration_link">Registration Link</label>
+                    <input type="url" name="registration_link" id="registration_link" placeholder="Guest signup">
+                </div>
+                <div class="form-group">
+                    <label for="role">Department / Role</label>
+                    <select name="role" id="role">
+                        <option value="">Select Role</option>
+                        <option value="HR">HR</option>
+                        <option value="Sales">Sales</option>
+                        <option value="IT">IT</option>
+                        <option value="Guests">Guests</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Wedding Fields -->
+            <div id="Wedding" class="specific-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="bride_groom_names">Bride & Groom Names <span class="required">*</span></label>
+                    <input type="text" name="bride_groom_names" id="bride_groom_names"
+                        placeholder="e.g. Romeo & Juliet">
+                </div>
+                <div class="form-group">
+                    <label for="ceremony_type">Ceremony Type</label>
+                    <select name="ceremony_type" id="ceremony_type">
+                        <option value="">Select Type</option>
+                        <option value="Traditional">Traditional</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Religious">Religious</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reception_venue">Reception Venue</label>
+                    <input type="text" name="reception_venue" id="reception_venue" placeholder="After-ceremony details">
+                </div>
+            </div>
+
+            <!-- Birthday Fields -->
+            <div id="Birthday" class="specific-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="celebrant_name">Celebrant Name <span class="required">*</span></label>
+                    <input type="text" name="celebrant_name" id="celebrant_name" placeholder="Person celebrating">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age / Birthday Year</label>
+                    <input type="number" name="age" id="age" min="1" max="100" placeholder="Age marking event">
+                </div>
+            </div>
+
+            <!-- Concert Fields -->
+            <div id="Concert" class="specific-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="performer_name">Performer / Band Name <span class="required">*</span></label>
+                    <input type="text" name="performer_name" id="performer_name" placeholder="Main attraction">
+                </div>
+                <div class="form-group">
+                    <label for="seat_category">Seat Category <span class="required">*</span></label>
+                    <select name="seat_category" id="seat_category">
+                        <option value="VIP">VIP</option>
+                        <option value="GOLD">GOLD</option>
+                        <option value="SILVER">SILVER</option>
+                        <option value="GENERAL">GENERAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ticket_price">Ticket Price</label>
+                    <input type="number" name="ticket_price" id="ticket_price" placeholder="Entry fee">
+                </div>
+            </div>
+
+            <!-- Online Fields -->
+            <div id="Online" class="specific-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="platform_link">Platform Link <span class="required">*</span></label>
+                    <input type="url" name="platform_link" id="platform_link" placeholder="Meeting / Streaming link">
+                </div>
+                <div class="form-group">
+                    <label for="access_code">Access Code</label>
+                    <input type="text" name="access_code" id="access_code" placeholder="Password or ticket code">
+                </div>
+            </div>
+
+            <!-- General Fields (Venue, etc.) -->
+            <div class="form-group">
+                <label for="venue">Venue (if applicable)</label>
+                <input type="text" name="venue" id="venue" placeholder="Event location">
+            </div>
+
+            <div class="form-group">
+                <label for="reminder">Remind Me</label>
+                <select name="reminder" id="reminder">
+                    <option value="15">15 minutes before</option>
+                    <option value="60">1 hour before</option>
+                    <option value="1440">1 day before</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-submit">Create Invitation</button>
+        </form>
+    </div>
+
+    <!-- Result Container (Hidden by default) -->
+    <div class="container result-container" id="result-container" style="display: none;">
+        <header>
+            <h1>Invitation Created!</h1>
+            <p>Here is your QR code for <strong id="result-title"></strong></p>
+        </header>
+
+        <div class="qr-wrapper" id="qr-code-display">
+            <!-- QR Code will be injected here -->
+        </div>
+
+        <p>Scan this code to add the event to your calendar.</p>
+
+        <a href="#" id="download-link" class="download-link" download="invite.ics">Download .ics file</a>
+
+        <br><br>
+        <button onclick="resetForm()" class="btn-submit"
+            style="text-decoration: none; display: inline-block; width: auto; padding: 0.5rem 2rem;">Create
+            Another</button>
+    </div>
+
+    <script>
+        // Removed date picker blur listener to prevent auto-closing
+
+        function showFields() {
+            // Hide all specific fields
+            const allSpecific = document.querySelectorAll('.specific-fields');
+            allSpecific.forEach(el => el.style.display = 'none');
+
+            // Reset required attributes for specific fields to avoid validation errors on hidden fields
+            const allInputs = document.querySelectorAll('.specific-fields input, .specific-fields select, .specific-fields textarea');
+            allInputs.forEach(el => el.required = false);
+
+            // Show selected
+            const eventType = document.getElementById('event_type').value;
+            const selectedDiv = document.getElementById(eventType);
+            if (selectedDiv) {
+                selectedDiv.style.display = 'block';
+
+                // Set required for mandatory fields in this section
+                if (eventType === 'Wedding') {
+                    document.querySelector('#bride_groom_names').required = true;
+                } else if (eventType === 'Birthday') {
+                    document.querySelector('#celebrant_name').required = true;
+                } else if (eventType === 'Concert') {
+                    document.querySelector('#performer_name').required = true;
+                    document.querySelector('#seat_category').required = true;
+                } else if (eventType === 'Online') {
+                    document.querySelector('#platform_link').required = true;
+                }
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const eventType = document.getElementById('event_type').value;
+            const eventDate = document.getElementById('event_date').value;
+            const reminder = document.getElementById('reminder').value;
+
+            let title = `${eventType} Invitation`;
+            let description = `You are invited to a ${eventType}!`;
+            let location = document.getElementById('venue').value;
+
+            // Specific Logic
+            if (eventType === 'Wedding') {
+                title = `Wedding: ${document.getElementById('bride_groom_names').value}`;
+                if (!location) location = document.getElementById('reception_venue').value;
+            } else if (eventType === 'Birthday') {
+                title = `Birthday: ${document.getElementById('celebrant_name').value}`;
+            } else if (eventType === 'Concert') {
+                title = `Concert: ${document.getElementById('performer_name').value}`;
+            } else if (eventType === 'Corporate') {
+                const comp = document.getElementById('company_name').value;
+                if (comp) title = `Event: ${comp}`;
+            } else if (eventType === 'Online') {
+                if (!location) location = document.getElementById('platform_link').value;
+            }
+
+            if (!location) location = 'TBD';
+
+            // Generate ICS Content
+            const icsContent = generateICS(title, description, location, eventDate, reminder);
+
+            // Generate QR Code
+            const qrContainer = document.getElementById('qr-code-display');
+            qrContainer.innerHTML = ''; // Clear previous
+            new QRCode(qrContainer, {
+                text: icsContent,
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            // Setup Download Link
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const downloadLink = document.getElementById('download-link');
+            downloadLink.href = URL.createObjectURL(blob);
+
+            // Show Result
+            document.getElementById('result-title').innerText = title;
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+        }
+
+        function generateICS(title, description, location, dateStr, reminderMinutes) {
+            // Use Local Time (Floating Time) to ensure it appears exactly as entered
+            const date = new Date(dateStr);
+            const format = (d) => {
+                const pad = (n) => n < 10 ? '0' + n : n;
+                return '' + d.getFullYear() +
+                    pad(d.getMonth() + 1) +
+                    pad(d.getDate()) + 'T' +
+                    pad(d.getHours()) +
+                    pad(d.getMinutes()) +
+                    pad(d.getSeconds());
+            };
+
+            const start = format(date);
+            const end = format(new Date(date.getTime() + 60 * 60 * 1000)); // 1 hour duration default
+            const now = format(new Date());
+
+            let ics = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//You Are Invited//EN',
+                'BEGIN:VEVENT',
+                `UID:${now}-${Math.floor(Math.random() * 10000)}@youareinvited`,
+                `DTSTAMP:${now}`,
+                `DTSTART:${start}`,
+                `DTEND:${end}`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${description}`,
+                `LOCATION:${location}`
+            ];
+
+            if (reminderMinutes) {
+                ics.push('BEGIN:VALARM');
+                ics.push('ACTION:DISPLAY');
+                ics.push('DESCRIPTION:Reminder');
+                ics.push(`TRIGGER:-PT${reminderMinutes}M`);
+                ics.push('END:VALARM');
+            }
+
+            ics.push('END:VEVENT');
+            ics.push('END:VCALENDAR');
+
+            return ics.join('\r\n');
+        }
+
+        function resetForm() {
+            document.getElementById('form-container').style.display = 'block';
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('eventForm').reset();
+            showFields(); // Reset visibility
+        }
+    </script>
+</body>
+
+</html>
