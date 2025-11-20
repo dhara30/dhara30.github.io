@@ -167,128 +167,113 @@
         <a href="#" id="download-link" class="download-link" download="invite.ics">Download .ics file</a>
 
         <br><br>
-        <button onclick="resetForm()" class="btn-submit"
-            style="text-decoration: none; display: inline-block; width: auto; padding: 0.5rem 2rem;">Create
-            Another</button>
-    </div>
+        // Reset required attributes for specific fields to avoid validation errors on hidden fields
+        const allInputs = document.querySelectorAll('.specific-fields input, .specific-fields select, .specific-fields
+        textarea');
+        allInputs.forEach(el => el.required = false);
 
-    <script>
-        // Close date picker on selection (UX improvement)
-        document.getElementById('event_date').addEventListener('change', function () {
-            this.blur();
-        });
+        // Show selected
+        const eventType = document.getElementById('event_type').value;
+        const selectedDiv = document.getElementById(eventType);
+        if (selectedDiv) {
+        selectedDiv.style.display = 'block';
 
-        function showFields() {
-            // Hide all specific fields
-            const allSpecific = document.querySelectorAll('.specific-fields');
-            allSpecific.forEach(el => el.style.display = 'none');
-
-            // Reset required attributes for specific fields to avoid validation errors on hidden fields
-            const allInputs = document.querySelectorAll('.specific-fields input, .specific-fields select, .specific-fields textarea');
-            allInputs.forEach(el => el.required = false);
-
-            // Show selected
-            const eventType = document.getElementById('event_type').value;
-            const selectedDiv = document.getElementById(eventType);
-            if (selectedDiv) {
-                selectedDiv.style.display = 'block';
-
-                // Set required for mandatory fields in this section
-                if (eventType === 'Wedding') {
-                    document.querySelector('#bride_groom_names').required = true;
-                } else if (eventType === 'Birthday') {
-                    document.querySelector('#celebrant_name').required = true;
-                } else if (eventType === 'Concert') {
-                    document.querySelector('#performer_name').required = true;
-                    document.querySelector('#seat_category').required = true;
-                } else if (eventType === 'Online') {
-                    document.querySelector('#platform_link').required = true;
-                }
-            }
+        // Set required for mandatory fields in this section
+        if (eventType === 'Wedding') {
+        document.querySelector('#bride_groom_names').required = true;
+        } else if (eventType === 'Birthday') {
+        document.querySelector('#celebrant_name').required = true;
+        } else if (eventType === 'Concert') {
+        document.querySelector('#performer_name').required = true;
+        document.querySelector('#seat_category').required = true;
+        } else if (eventType === 'Online') {
+        document.querySelector('#platform_link').required = true;
+        }
+        }
         }
 
         function handleFormSubmit(event) {
-            event.preventDefault();
+        event.preventDefault();
 
-            const eventType = document.getElementById('event_type').value;
-            const eventDate = document.getElementById('event_date').value;
-            const reminder = document.getElementById('reminder').value;
+        const eventType = document.getElementById('event_type').value;
+        const eventDate = document.getElementById('event_date').value;
+        const reminder = document.getElementById('reminder').value;
 
-            let title = `${eventType} Invitation`;
-            let description = `You are invited to a ${eventType}!`;
-            let location = document.getElementById('venue').value;
+        let title = `${eventType} Invitation`;
+        let description = `You are invited to a ${eventType}!`;
+        let location = document.getElementById('venue').value;
 
-            // Specific Logic
-            if (eventType === 'Wedding') {
-                title = `Wedding: ${document.getElementById('bride_groom_names').value}`;
-                if (!location) location = document.getElementById('reception_venue').value;
-            } else if (eventType === 'Birthday') {
-                title = `Birthday: ${document.getElementById('celebrant_name').value}`;
-            } else if (eventType === 'Concert') {
-                title = `Concert: ${document.getElementById('performer_name').value}`;
-            } else if (eventType === 'Corporate') {
-                const comp = document.getElementById('company_name').value;
-                if (comp) title = `Event: ${comp}`;
-            } else if (eventType === 'Online') {
-                if (!location) location = document.getElementById('platform_link').value;
-            }
+        // Specific Logic
+        if (eventType === 'Wedding') {
+        title = `Wedding: ${document.getElementById('bride_groom_names').value}`;
+        if (!location) location = document.getElementById('reception_venue').value;
+        } else if (eventType === 'Birthday') {
+        title = `Birthday: ${document.getElementById('celebrant_name').value}`;
+        } else if (eventType === 'Concert') {
+        title = `Concert: ${document.getElementById('performer_name').value}`;
+        } else if (eventType === 'Corporate') {
+        const comp = document.getElementById('company_name').value;
+        if (comp) title = `Event: ${comp}`;
+        } else if (eventType === 'Online') {
+        if (!location) location = document.getElementById('platform_link').value;
+        }
 
-            if (!location) location = 'TBD';
+        if (!location) location = 'TBD';
 
-            // Generate ICS Content
-            const icsContent = generateICS(title, description, location, eventDate, reminder);
+        // Generate ICS Content
+        const icsContent = generateICS(title, description, location, eventDate, reminder);
 
-            // Generate QR Code
-            const qrContainer = document.getElementById('qr-code-display');
-            qrContainer.innerHTML = ''; // Clear previous
-            new QRCode(qrContainer, {
-                text: icsContent,
-                width: 256,
-                height: 256,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.M
-            });
+        // Generate QR Code
+        const qrContainer = document.getElementById('qr-code-display');
+        qrContainer.innerHTML = ''; // Clear previous
+        new QRCode(qrContainer, {
+        text: icsContent,
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+        });
 
-            // Setup Download Link
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const downloadLink = document.getElementById('download-link');
-            downloadLink.href = URL.createObjectURL(blob);
+        // Setup Download Link
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const downloadLink = document.getElementById('download-link');
+        downloadLink.href = URL.createObjectURL(blob);
 
-            // Show Result
-            document.getElementById('result-title').innerText = title;
-            document.getElementById('form-container').style.display = 'none';
-            document.getElementById('result-container').style.display = 'block';
-                `UID:${now}-${Math.floor(Math.random() * 10000)}@youareinvited`,
-                `DTSTAMP:${now}`,
-                `DTSTART:${start}`,
-                `DTEND:${end}`,
-                `SUMMARY:${title}`,
-                `DESCRIPTION:${description}`,
-                `LOCATION:${location}`
-            ];
+        // Show Result
+        document.getElementById('result-title').innerText = title;
+        document.getElementById('form-container').style.display = 'none';
+        document.getElementById('result-container').style.display = 'block';
+        `UID:${now}-${Math.floor(Math.random() * 10000)}@youareinvited`,
+        `DTSTAMP:${now}`,
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:${title}`,
+        `DESCRIPTION:${description}`,
+        `LOCATION:${location}`
+        ];
 
-            if (reminderMinutes) {
-                ics.push('BEGIN:VALARM');
-                ics.push('ACTION:DISPLAY');
-                ics.push('DESCRIPTION:Reminder');
-                ics.push(`TRIGGER:-PT${reminderMinutes}M`);
-                ics.push('END:VALARM');
-            }
+        if (reminderMinutes) {
+        ics.push('BEGIN:VALARM');
+        ics.push('ACTION:DISPLAY');
+        ics.push('DESCRIPTION:Reminder');
+        ics.push(`TRIGGER:-PT${reminderMinutes}M`);
+        ics.push('END:VALARM');
+        }
 
-            ics.push('END:VEVENT');
-            ics.push('END:VCALENDAR');
+        ics.push('END:VEVENT');
+        ics.push('END:VCALENDAR');
 
-            return ics.join('\r\n');
+        return ics.join('\r\n');
         }
 
         function resetForm() {
-            document.getElementById('form-container').style.display = 'block';
-            document.getElementById('result-container').style.display = 'none';
-            document.getElementById('eventForm').reset();
-            showFields(); // Reset visibility
+        document.getElementById('form-container').style.display = 'block';
+        document.getElementById('result-container').style.display = 'none';
+        document.getElementById('eventForm').reset();
+        showFields(); // Reset visibility
         }
-    </script>
+        </script>
 </body>
 
 </html>
