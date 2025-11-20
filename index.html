@@ -259,23 +259,6 @@
             document.getElementById('result-title').innerText = title;
             document.getElementById('form-container').style.display = 'none';
             document.getElementById('result-container').style.display = 'block';
-        }
-
-        function generateICS(title, description, location, dateStr, reminderMinutes) {
-            // Format date to YYYYMMDDTHHMMSSZ (UTC) or Local time
-            // Simple local time format: YYYYMMDDTHHMMSS
-            const date = new Date(dateStr);
-            const format = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-
-            const start = format(date);
-            const end = format(new Date(date.getTime() + 60 * 60 * 1000)); // 1 hour duration default
-            const now = format(new Date());
-
-            let ics = [
-                'BEGIN:VCALENDAR',
-                'VERSION:2.0',
-                'PRODID:-//You Are Invited//EN',
-                'BEGIN:VEVENT',
                 `UID:${now}-${Math.floor(Math.random() * 10000)}@youareinvited`,
                 `DTSTAMP:${now}`,
                 `DTSTART:${start}`,
