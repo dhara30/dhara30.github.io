@@ -1,0 +1,11 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:ics.py - http://git.io/lLljaA
+BEGIN:VEVENT
+DESCRIPTION:You are invited to a Wedding!
+LOCATION:fsdf
+DTSTART:20251121T014000Z
+SUMMARY:Wedding: Romeo & Juliet
+UID:d96bc1d2-d155-4354-bf4b-5776aaf81d60@d96b.org
+END:VEVENT
+END:VCALENDAR
