@@ -9,34 +9,9 @@ from datetime import timedelta
 
 app = Flask(__name__)
 
-VISITOR_FILE = 'visitors.txt'
-
-def get_visitor_count():
-    if os.path.exists(VISITOR_FILE):
-        with open(VISITOR_FILE, 'r') as f:
-            visitors = set(line.strip() for line in f)
-            return len(visitors)
-    return 0
-
-def add_visitor(ip):
-    visitors = set()
-    if os.path.exists(VISITOR_FILE):
-        with open(VISITOR_FILE, 'r') as f:
-            visitors = set(line.strip() for line in f)
-    if ip not in visitors:
-        visitors.add(ip)
-        with open(VISITOR_FILE, 'w') as f:
-            for visitor in visitors:
-                f.write(visitor + '\n')
-        return True  # New visitor
-    return False  # Existing visitor
-
 @app.route('/')
 def index():
-    ip = request.remote_addr
-    is_new = add_visitor(ip)
-    count = get_visitor_count()
-    return render_template('index.html', visitor_count=count)
+    return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -127,7 +102,7 @@ def generate():
     qr_path = os.path.join('static', qr_filename)
     img.save(qr_path)
     
-    return render_template('result.html', qr_image=qr_filename, ics_file=ics_filename, event_title=title, visitor_count=get_visitor_count())
+    return render_template('result.html', qr_image=qr_filename, ics_file=ics_filename, event_title=title)
 
 if __name__ == '__main__':
     app.run(debug=True)
