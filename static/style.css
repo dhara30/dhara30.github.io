@@ -274,7 +274,7 @@ header {
 }
 
 .app-logo {
-    width: 80px;
+    width: 120px;
     height: auto;
     margin-bottom: 1rem;
 }
@@ -508,7 +508,7 @@ textarea:focus {
     }
 
     .app-logo {
-        width: 60px;
+        width: 85px;
         margin-bottom: 0.85rem;
     }
 
@@ -634,7 +634,7 @@ textarea:focus {
     }
 
     .app-logo {
-        width: 55px;
+        width: 75px;
         margin-bottom: 0.75rem;
     }
 
@@ -741,7 +741,7 @@ textarea:focus {
     }
 
     .app-logo {
-        width: 48px;
+        width: 65px;
         margin-bottom: 0.5rem;
     }
 
@@ -821,5 +821,48 @@ textarea:focus {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* Visitor Counter */
+.visitor-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    box-shadow: 0 2px 8px rgba(16, 42, 67, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.visitor-counter:hover {
+    transform: translateY(-2px);
+}
+
+.counter-icon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.counter-text {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Mobile responsiveness for visitor counter */
+@media (max-width: 768px) {
+    .visitor-counter {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        margin-top: 8px;
+    }
+
+    .counter-icon {
+        margin-right: 6px;
+        font-size: 1rem;
     }
 }
