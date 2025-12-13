@@ -367,11 +367,19 @@ textarea:focus {
     text-align: center;
 }
 
-.qr-code {
+.qr-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 2rem 0;
+}
+
+.qr-code {
+    margin: 0 auto;
     border: 10px solid var(--primary-color);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
+    display: block;
 }
 
 .download-link {
