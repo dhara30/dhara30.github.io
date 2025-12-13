@@ -12,10 +12,18 @@
 </head>
 
 <body>
+    <!-- Floating Animation Shapes -->
+    <div class="floating-shape floating-shape-1"></div>
+    <div class="floating-shape floating-shape-2"></div>
+    <div class="floating-shape floating-shape-3"></div>
+    <div class="floating-shape floating-shape-4"></div>
+    <div class="floating-shape floating-shape-5"></div>
+    <div class="floating-shape floating-shape-6"></div>
+
     <div class="container" id="form-container">
         <header>
             <img src="static/logo.png" alt="Logo" class="app-logo">
-            <h1>You Are Invited ! Outter Index</h1>
+            <h1>You Are Invited !</h1>
             <p>Create your aesthetic event invitation</p>
         </header>
 
@@ -173,7 +181,10 @@
     </div>
 
     <script>
-        // Removed date picker blur listener to prevent auto-closing
+        // Close date picker on selection (UX improvement)
+        document.getElementById('event_date').addEventListener('change', function () {
+            this.blur();
+        });
 
         function showFields() {
             // Hide all specific fields
@@ -259,17 +270,10 @@
         }
 
         function generateICS(title, description, location, dateStr, reminderMinutes) {
-            // Use Local Time (Floating Time) to ensure it appears exactly as entered
+            // Format date to YYYYMMDDTHHMMSSZ (UTC) or Local time
+            // Simple local time format: YYYYMMDDTHHMMSS
             const date = new Date(dateStr);
-            const format = (d) => {
-                const pad = (n) => n < 10 ? '0' + n : n;
-                return '' + d.getFullYear() +
-                    pad(d.getMonth() + 1) +
-                    pad(d.getDate()) + 'T' +
-                    pad(d.getHours()) +
-                    pad(d.getMinutes()) +
-                    pad(d.getSeconds());
-            };
+            const format = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
             const start = format(date);
             const end = format(new Date(date.getTime() + 60 * 60 * 1000)); // 1 hour duration default
@@ -311,6 +315,5 @@
         }
     </script>
 </body>
-
 
 </html>
