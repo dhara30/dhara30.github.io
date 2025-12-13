@@ -23,6 +23,8 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Floating Animation Elements */
@@ -318,6 +320,9 @@ textarea {
     background-color: var(--input-bg);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 input:focus,
@@ -471,106 +476,299 @@ textarea:focus {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+
+/* Modern iPhones (iPhone 12-15, XR, 11, etc.) - 375px to 430px */
+@media (min-width: 375px) and (max-width: 430px) {
+    body {
+        padding: 0;
+        background-color: var(--bg-color);
+    }
+
     .container {
-        padding: 1.5rem 1.5rem;
-        margin: 1rem;
+        padding: 1.75rem 1.5rem;
+        margin: 1.5rem 1.25rem;
+        width: calc(100% - 2.5rem);
+        max-width: 100%;
+        box-shadow: 0 8px 20px rgba(16, 42, 67, 0.12);
+    }
+
+    header {
+        margin-bottom: 1.75rem;
     }
 
     header h1 {
         font-size: 2rem;
+        margin-bottom: 0.6rem;
+        line-height: 1.3;
     }
 
     header p {
         font-size: 0.9rem;
+        opacity: 0.85;
     }
 
     .app-logo {
         width: 60px;
+        margin-bottom: 0.85rem;
     }
 
     .form-group {
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.15rem;
     }
 
     label {
         font-size: 0.9rem;
+        margin-bottom: 0.45rem;
+        font-weight: 600;
     }
 
     input,
     select,
     textarea {
-        font-size: 0.9rem;
-        padding: 0.65rem;
+        font-size: 16px;
+        padding: 0.8rem 0.7rem;
+        border-radius: 8px;
+        border: 1.5px solid var(--border-color);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(16, 42, 67, 0.08);
+    }
+
+    textarea {
+        min-height: 90px;
     }
 
     .btn-submit {
-        font-size: 1rem;
-        padding: 0.85rem;
+        font-size: 1.05rem;
+        padding: 0.95rem;
+        margin-top: 0.75rem;
+        border-radius: 8px;
+    }
+
+    .qr-wrapper {
+        margin: 2rem 0;
     }
 
     .qr-code {
         width: 100%;
-        max-width: 250px;
+        max-width: 260px;
         height: auto;
+        border-width: 8px;
     }
 
     .footer {
-        padding: 1.5rem 1rem;
+        padding: 1.75rem 1.25rem;
         margin-top: 2rem;
     }
 
     .footer-content {
-        gap: 1rem;
+        gap: 1.35rem;
     }
 
     .social-link {
         font-size: 0.9rem;
-        padding: 0.65rem 1.25rem;
+        padding: 0.75rem 1.3rem;
     }
 
     .footer-info p {
         font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .footer-tagline {
+        font-size: 0.8rem !important;
+    }
+
+    .footer-links {
+        font-size: 0.8rem;
+    }
+
+    /* Subtle floating shapes for iPhone */
+    .floating-shape-1,
+    .floating-shape-3 {
+        opacity: 0.1;
+        transform: scale(0.65);
+    }
+
+    .floating-shape-2,
+    .floating-shape-5 {
+        opacity: 0.08;
+        transform: scale(0.75);
+    }
+
+    .floating-shape-4,
+    .floating-shape-6 {
+        opacity: 0.09;
+        transform: scale(0.7);
+    }
+}
+
+/* Tablets and larger phones */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+    }
+
+    .container {
+        padding: 1.5rem 1.25rem;
+        margin: 1rem 1rem;
+        width: calc(100% - 2rem);
+        max-width: 100%;
+    }
+
+    header {
+        margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+        font-size: 1.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    header p {
+        font-size: 0.85rem;
+    }
+
+    .app-logo {
+        width: 55px;
+        margin-bottom: 0.75rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        font-size: 0.875rem;
+        margin-bottom: 0.4rem;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        padding: 0.7rem 0.6rem;
+    }
+
+    textarea {
+        min-height: 80px;
+    }
+
+    .btn-submit {
+        font-size: 1rem;
+        padding: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .qr-wrapper {
+        margin: 1.5rem 0;
+    }
+
+    .qr-code {
+        width: 100%;
+        max-width: 240px;
+        height: auto;
+        border-width: 8px;
+    }
+
+    .footer {
+        padding: 1.5rem 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .footer-content {
+        gap: 1.25rem;
+    }
+
+    .social-link {
+        font-size: 0.875rem;
+        padding: 0.7rem 1.2rem;
+    }
+
+    .footer-info p {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    .footer-tagline {
+        font-size: 0.75rem !important;
+    }
+
+    .footer-links {
+        font-size: 0.75rem;
     }
 
     /* Adjust floating shapes for mobile */
     .floating-shape-1,
     .floating-shape-3 {
-        opacity: 0.5;
-        transform: scale(0.7);
+        opacity: 0.08;
+        transform: scale(0.6);
     }
 
     .floating-shape-2,
     .floating-shape-5 {
-        opacity: 0.4;
+        opacity: 0.06;
+        transform: scale(0.7);
     }
 
     .floating-shape-4,
     .floating-shape-6 {
-        opacity: 0.5;
-        transform: scale(0.8);
+        opacity: 0.07;
+        transform: scale(0.65);
     }
 }
 
-@media (max-width: 480px) {
+/* Small phones (smaller than iPhone SE) */
+@media (max-width: 374px) {
     .container {
         padding: 1.25rem 1rem;
-        margin: 0.5rem;
+        margin: 0.75rem 0.75rem;
+        width: calc(100% - 1.5rem);
     }
 
     header h1 {
-        font-size: 1.75rem;
+        font-size: 1.65rem;
+        line-height: 1.2;
+    }
+
+    header p {
+        font-size: 0.8rem;
     }
 
     .app-logo {
-        width: 50px;
+        width: 48px;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 0.9rem;
+    }
+
+    label {
+        font-size: 0.85rem;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 16px;
+        padding: 0.65rem 0.55rem;
+    }
+
+    .btn-submit {
+        padding: 0.85rem;
+        font-size: 0.95rem;
     }
 
     .social-link {
-        font-size: 0.85rem;
-        padding: 0.6rem 1rem;
-        flex-direction: column;
-        gap: 0.25rem;
+        font-size: 0.8rem;
+        padding: 0.65rem 1rem;
+        gap: 0.4rem;
     }
 
     .social-link svg {
@@ -579,8 +777,28 @@ textarea:focus {
     }
 
     .qr-code {
-        max-width: 200px;
-        border-width: 5px;
+        max-width: 220px;
+        border-width: 6px;
+    }
+
+    .footer {
+        padding: 1.25rem 0.75rem;
+    }
+
+    .footer-content {
+        gap: 1rem;
+    }
+
+    .footer-info p {
+        font-size: 0.75rem;
+    }
+
+    .footer-tagline {
+        font-size: 0.7rem !important;
+    }
+
+    .footer-links {
+        font-size: 0.7rem;
     }
 }
 
