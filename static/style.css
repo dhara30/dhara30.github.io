@@ -18,11 +18,11 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Floating Animation Elements */
@@ -261,7 +261,7 @@ body {
     box-shadow: 0 10px 25px rgba(16, 42, 67, 0.1);
     width: 100%;
     max-width: 600px;
-    margin: 2rem;
+    margin: 2rem auto;
     position: relative;
     z-index: 1;
 }
@@ -394,4 +394,214 @@ textarea:focus {
 
 .download-link:hover {
     border-bottom-color: var(--secondary-color);
+}
+
+/* Footer Styles */
+.footer {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    padding: 2rem 1rem;
+    margin-top: auto;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.social-link svg {
+    width: 24px;
+    height: 24px;
+}
+
+.footer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.footer-tagline {
+    font-size: 0.85rem !important;
+    opacity: 0.7 !important;
+    font-style: italic;
+}
+
+.footer-links {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem 1.5rem;
+        margin: 1rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    header p {
+        font-size: 0.9rem;
+    }
+
+    .app-logo {
+        width: 60px;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    label {
+        font-size: 0.9rem;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 0.9rem;
+        padding: 0.65rem;
+    }
+
+    .btn-submit {
+        font-size: 1rem;
+        padding: 0.85rem;
+    }
+
+    .qr-code {
+        width: 100%;
+        max-width: 250px;
+        height: auto;
+    }
+
+    .footer {
+        padding: 1.5rem 1rem;
+        margin-top: 2rem;
+    }
+
+    .footer-content {
+        gap: 1rem;
+    }
+
+    .social-link {
+        font-size: 0.9rem;
+        padding: 0.65rem 1.25rem;
+    }
+
+    .footer-info p {
+        font-size: 0.85rem;
+    }
+
+    /* Adjust floating shapes for mobile */
+    .floating-shape-1,
+    .floating-shape-3 {
+        opacity: 0.5;
+        transform: scale(0.7);
+    }
+
+    .floating-shape-2,
+    .floating-shape-5 {
+        opacity: 0.4;
+    }
+
+    .floating-shape-4,
+    .floating-shape-6 {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1.25rem 1rem;
+        margin: 0.5rem;
+    }
+
+    header h1 {
+        font-size: 1.75rem;
+    }
+
+    .app-logo {
+        width: 50px;
+    }
+
+    .social-link {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .social-link svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .qr-code {
+        max-width: 200px;
+        border-width: 5px;
+    }
+}
+
+/* Tablet and larger screens */
+@media (min-width: 769px) {
+    .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .footer-info {
+        align-items: flex-start;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
