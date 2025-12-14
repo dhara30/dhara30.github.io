@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oops! Attempts Exhausted</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <style>
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .error-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .error-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .error-card h1 {
+            color: #102a43;
+            font-size: 32px;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+
+        .error-card p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .attempt-info {
+            background: #f0f4f8;
+            border-left: 4px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .attempt-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .whatsapp-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #25D366, #1fb956);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .back-home {
+            display: inline-block;
+            color: #6366f1;
+            text-decoration: none;
+            margin-top: 20px;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .back-home:hover {
+            color: #4f46e5;
+            text-decoration: underline;
+        }
+
+        .code-display {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2e7d32;
+            word-break: break-all;
+        }
+
+        .floating-shape {
+            position: fixed !important;
+            z-index: -1 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Animation Shapes -->
+    <div class="floating-shape floating-shape-1"></div>
+    <div class="floating-shape floating-shape-2"></div>
+    <div class="floating-shape floating-shape-3"></div>
+    <div class="floating-shape floating-shape-4"></div>
+    <div class="floating-shape floating-shape-5"></div>
+
+    <div class="error-container">
+        <div class="error-card">
+            <div class="error-emoji">😅</div>
+            <h1>Oops! Invitations Exhausted</h1>
+            <p>You've used all of your invitation attempts for this code. No worries though! We're here to help! 💪</p>
+
+            <div class="attempt-info" id="attemptInfo">
+                <p><strong>Your Code:</strong></p>
+                <div class="code-display" id="codeDisplay">Loading...</div>
+                <p id="limitInfo"></p>
+            </div>
+
+            <p style="font-size: 14px; color: #ff6b6b; margin: 15px 0;">
+                💡 <strong>Need more invitations?</strong> Contact us via WhatsApp!
+            </p>
+
+            <a href="#" id="whatsappLink" class="whatsapp-btn">
+                📱 Chat on WhatsApp
+            </a>
+
+            <a href="/" class="back-home">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // WhatsApp support number (Update this with your actual WhatsApp number)
+        const SUPPORT_WHATSAPP_NUMBER = '919327858678'; // Format: country code + number (e.g., 91 for India)
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const url = new URL(window.location);
+            return url.searchParams.get(name);
+        }
+
+        // Initialize error page
+        document.addEventListener('DOMContentLoaded', function() {
+            const reason = getUrlParameter('reason');
+            const code = getUrlParameter('code');
+            const codeInfo = JSON.parse(localStorage.getItem('codeInfo') || '{}');
+
+            if (reason === 'exhausted' && codeInfo.code) {
+                document.getElementById('codeDisplay').textContent = codeInfo.code;
+                document.getElementById('limitInfo').innerHTML = `
+                    <strong>Attempts Used:</strong> ${codeInfo.used || 0} / ${codeInfo.limit === Infinity ? '∞' : codeInfo.limit}
+                    <br>
+                    <em>Your plan: ${codeInfo.name || 'Unknown'}</em>
+                `;
+
+                // WhatsApp Link with pre-filled message
+                const whatsappMessage = encodeURIComponent(
+                    `Hi ! \n\nI've exhausted all my invitation attempts with code: ${codeInfo.code}\n\nPlan: ${codeInfo.name}\nAttempts Used: ${codeInfo.used || 0}/${codeInfo.limit === Infinity ? 'Unlimited' : codeInfo.limit}\n\nCan you help me get more invitations? 🙏`
+                );
+                const whatsappLink = `https://wa.me/${SUPPORT_WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+                document.getElementById('whatsappLink').href = whatsappLink;
+            }
+        });
+    </script>
+</body>
+
+</html>
