@@ -28,7 +28,7 @@
 
     <div class="container" id="form-container">
         <header>
-            <img src="static/logo.png" alt="Logo" class="app-logo">
+            <img src="static/logo.png" alt="Logo" class="app-logo" id="app-logo-reset" style="cursor: pointer;">
             <h1>You Are Invited !</h1>
             <p>Create your aesthetic event invitation</p>
         </header>
@@ -392,6 +392,15 @@
 
         // Click to toggle footer details
         document.addEventListener('DOMContentLoaded', function () {
+            // Logo click to reset everything
+            const logoReset = document.getElementById('app-logo-reset');
+            if (logoReset) {
+                logoReset.addEventListener('click', function () {
+                    resetForm();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
             const footerToggle = document.getElementById('footer-toggle');
             const footerInfoSection = document.querySelector('.footer-info-section');
             let isOpen = false;
