@@ -7,7 +7,7 @@ import io
 from ics.alarm import DisplayAlarm
 from datetime import timedelta
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 
 @app.route('/')
 def index():
@@ -16,7 +16,12 @@ def index():
 @app.route('/generate', methods=['POST'])
 def generate():
     data = request.form
-    event_type = data.get('event_type')
+    event_type = data.get('event_type', '').strip()
+    
+    # Debug: Print event type to console
+    print(f"DEBUG: Event Type = '{event_type}'")
+    print(f"DEBUG: Platform Link = '{data.get('platform_link')}'")
+    print(f"DEBUG: Access Code = '{data.get('access_code')}'")
     
     # Create Calendar Event
     c = Calendar()
@@ -49,7 +54,27 @@ def generate():
             pass # Fallback or error handling
             
 
-    e.description = data.get('description', f"You are invited to a {event_type}!")
+    # Get platform details (always retrieve from form)
+    platform_link = data.get('platform_link', '').strip()
+    access_code = data.get('access_code', '').strip()
+    
+    # Description with Online/Hybrid access details
+    base_desc = data.get('description', f"You are invited to a {event_type}!")
+    
+    # Add platform details for Online events
+    if event_type == 'Online':
+        if platform_link or access_code:
+            base_desc = base_desc + "\n\n"
+            if platform_link:
+                base_desc += f"Join Link: {platform_link}\n"
+            if access_code:
+                base_desc += f"Access Code: {access_code}\n"
+    
+    e.description = base_desc
+    
+    # Set URL field for Online events (shows prominently in iPhone Calendar)
+    if event_type == 'Online' and platform_link:
+        e.url = platform_link
     
     # Location Logic
     location = data.get('venue')
@@ -57,7 +82,13 @@ def generate():
         if event_type == 'Wedding':
             location = data.get('reception_venue')
         elif event_type == 'Online':
-            location = data.get('platform_link')
+            # For online events, show access info in location
+            if platform_link and access_code:
+                location = f"{platform_link} (Code: {access_code})"
+            elif platform_link:
+                location = platform_link
+            elif access_code:
+                location = f"Access Code: {access_code}"
             
     e.location = location if location else 'TBD'
 
