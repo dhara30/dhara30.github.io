@@ -390,24 +390,37 @@
             showFields(); // Reset visibility
         }
 
-        // Auto-scroll footer on hover - wait for DOM to load
+        // Click to toggle footer details
         document.addEventListener('DOMContentLoaded', function () {
-            const footerHint = document.querySelector('.footer-hint');
-            const footer = document.querySelector('.footer');
-            let scrollTimeout;
+            const footerToggle = document.getElementById('footer-toggle');
+            const footerInfoSection = document.querySelector('.footer-info-section');
+            let isOpen = false;
 
-            if (footerHint && footer) {
-                footerHint.addEventListener('mouseenter', function () {
-                    clearTimeout(scrollTimeout);
-                    // Scroll footer into view at the bottom
-                    footer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            if (footerToggle && footerInfoSection) {
+                footerToggle.style.cursor = 'pointer';
+                footerToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    isOpen = !isOpen;
+                    
+                    if (isOpen) {
+                        footerInfoSection.classList.add('open');
+                        footerToggle.textContent = ' Close ✕';
+                        setTimeout(() => {
+                            document.querySelector('.footer').scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        }, 100);
+                    } else {
+                        footerInfoSection.classList.remove('open');
+                        footerToggle.textContent = ' Know How ?';
+                    }
                 });
 
-                footerHint.addEventListener('mouseleave', function () {
-                    scrollTimeout = setTimeout(() => {
-                        // Scroll back up to main content
-                        document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 500);
+                // Close when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!e.target.closest('.footer') && isOpen) {
+                        isOpen = false;
+                        footerInfoSection.classList.remove('open');
+                        footerToggle.textContent = ' Know How ?';
+                    }
                 });
             }
         });
@@ -432,7 +445,7 @@
                 <p class="footer-tagline">Made with ❤️ for events</p>
             </div>
             <div class="footer-section footer-right">
-                <span class="footer-hint"> Know How ?</span>
+                <span class="footer-hint" id="footer-toggle"> Know How ?</span>
             </div>
         </div>
         
@@ -448,6 +461,7 @@
                         <li>Set reminder preferences</li>
                         <li>Create your QR code</li>
                         <li>Share or download</li>
+                        <li><strong>⚠️ QR Limitation:</strong> QR codes store up to <strong>2,953 bytes</strong>. Keep details concise for reliable scanning.</li>
                     </ol>
                 </div>
                 <div class="footer-ethics-column">
