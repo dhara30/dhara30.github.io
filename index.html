@@ -13,6 +13,7 @@
 
 <body>
     <!-- Floating Animation Shapes -->
+     
     <div class="floating-shape floating-shape-1"></div>
     <div class="floating-shape floating-shape-2"></div>
     <div class="floating-shape floating-shape-3"></div>
@@ -25,6 +26,18 @@
     <div class="floating-shape floating-shape-10"></div>
     <div class="floating-shape floating-shape-11"></div>
     <div class="floating-shape floating-shape-12"></div>
+
+    <!-- Code Validation Modal -->
+    <div id="codeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeCodeModal()">&times;</span>
+            <h2>Enter Your Access Code</h2>
+            <p>Enter your code to create invitations</p>
+            <input type="text" id="codeInput" placeholder="Enter code" style="width: 100%; padding: 10px; margin: 15px 0; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+            <button onclick="validateAndStoreCode()" style="width: 100%; padding: 10px; background: #6366f1; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 600;">Verify Code</button>
+            <p id="codeError" style="color: red; margin-top: 10px; text-align: center; display: none;"></p>
+        </div>
+    </div>
 
     <div class="container" id="form-container">
         <header>
@@ -187,6 +200,93 @@
     </div>
 
     <script>
+        // ===== CODE VALIDATION SYSTEM =====
+        const VALID_CODES = {
+            '2026FREETHREE': { limit: 3, name: 'Free - 3 Invitations' },
+            '20CLIFIFTY26': { limit: 50, name: 'Standard - 50 Invitations' },
+            'HUNDREDCLI2026': { limit: 100, name: 'Premium - 100 Invitations' },
+            'OWNER2026ME': { limit: Infinity, name: 'Unlimited - Owner' }
+        };
+
+        const WHATSAPP_LINK = 'https://wa.me/918800000000?text=Hi%20I%20have%20exhausted%20my%20invitation%20attempts.%20Please%20help%21'; // Update with actual number
+
+        // Initialize code on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCodeSystem();
+        });
+
+        function initializeCodeSystem() {
+            const storedCode = localStorage.getItem('inviteCode');
+            if (!storedCode || !isValidCode(storedCode)) {
+                // Show code modal on first visit or if code is invalid
+                setTimeout(() => showCodeModal(), 300);
+            }
+        }
+
+        function showCodeModal() {
+            document.getElementById('codeModal').style.display = 'flex';
+            document.getElementById('codeInput').focus();
+        }
+
+        function closeCodeModal() {
+            const storedCode = localStorage.getItem('inviteCode');
+            if (!storedCode) {
+                alert('⚠️ You must enter a valid code to continue');
+            } else {
+                document.getElementById('codeModal').style.display = 'none';
+            }
+        }
+
+        function validateAndStoreCode() {
+            const code = document.getElementById('codeInput').value.trim().toUpperCase();
+            const errorMsg = document.getElementById('codeError');
+
+            if (!code) {
+                errorMsg.textContent = '❌ Please enter a code';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (!isValidCode(code)) {
+                errorMsg.textContent = '❌ Invalid code. Please try again.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Store code and initialize attempts
+            localStorage.setItem('inviteCode', code);
+            localStorage.setItem('codeInfo', JSON.stringify({
+                code: code,
+                name: VALID_CODES[code].name,
+                limit: VALID_CODES[code].limit,
+                used: 0,
+                startDate: new Date().toISOString()
+            }));
+
+            errorMsg.style.display = 'none';
+            document.getElementById('codeModal').style.display = 'none';
+            alert(`✅ Code verified! You have ${VALID_CODES[code].limit === Infinity ? 'unlimited' : VALID_CODES[code].limit} invitations.`);
+        }
+
+        function isValidCode(code) {
+            return code.toUpperCase() in VALID_CODES;
+        }
+
+        function checkAttemptsRemaining() {
+            const codeInfo = JSON.parse(localStorage.getItem('codeInfo') || '{}');
+            const remaining = (codeInfo.limit === Infinity) ? Infinity : (codeInfo.limit - (codeInfo.used || 0));
+            return { remaining, codeInfo };
+        }
+
+        function useAttempt() {
+            const codeInfo = JSON.parse(localStorage.getItem('codeInfo'));
+            if (codeInfo && codeInfo.limit !== Infinity) {
+                codeInfo.used = (codeInfo.used || 0) + 1;
+                localStorage.setItem('codeInfo', JSON.stringify(codeInfo));
+            }
+        }
+
+        // ===== ORIGINAL SECURITY FUNCTIONS =====
         // Security: Input sanitization function to prevent script injection
         function sanitizeInput(input) {
             if (typeof input !== 'string') return '';
@@ -244,6 +344,13 @@
 
         function handleFormSubmit(event) {
             event.preventDefault();
+
+            // CHECK ATTEMPTS BEFORE PROCEEDING
+            const { remaining, codeInfo } = checkAttemptsRemaining();
+            if (remaining <= 0) {
+                window.location.href = '/error?reason=exhausted&code=' + encodeURIComponent(codeInfo.code);
+                return;
+            }
 
             const eventType = sanitizeInput(document.getElementById('event_type').value);
             const eventDate = document.getElementById('event_date').value;
@@ -343,6 +450,9 @@
             document.getElementById('result-title').textContent = title;
             document.getElementById('form-container').style.display = 'none';
             document.getElementById('result-container').style.display = 'block';
+
+            // ===== DECREMENT ATTEMPT AFTER SUCCESSFUL GENERATION =====
+            useAttempt();
         }
 
         function generateICS(title, description, location, dateStr, reminderMinutes) {
