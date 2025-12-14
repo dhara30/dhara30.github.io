@@ -187,6 +187,27 @@
     </div>
 
     <script>
+        // Security: Input sanitization function to prevent script injection
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input
+                .replace(/[<>\"'`]/g, '') // Remove HTML special characters
+                .replace(/javascript:/gi, '') // Remove javascript protocol
+                .replace(/on\w+=/gi, '') // Remove event handlers
+                .trim(); // Remove leading/trailing whitespace
+        }
+
+        // Function to escape ICS special characters
+        function escapeICSField(text) {
+            if (typeof text !== 'string') return '';
+            return text
+                .replace(/\\/g, '\\\\')
+                .replace(/\n/g, '\\n')
+                .replace(/;/g, '\\;')
+                .replace(/,/g, '\\,')
+                .replace(/\r/g, '');
+        }
+
         // Close date picker on selection (UX improvement)
         document.getElementById('event_date').addEventListener('change', function () {
             this.blur();
@@ -224,28 +245,28 @@
         function handleFormSubmit(event) {
             event.preventDefault();
 
-            const eventType = document.getElementById('event_type').value;
+            const eventType = sanitizeInput(document.getElementById('event_type').value);
             const eventDate = document.getElementById('event_date').value;
-            const reminder = document.getElementById('reminder').value;
+            const reminder = sanitizeInput(document.getElementById('reminder').value);
 
             let title = `${eventType} Invitation`;
             let description = `You are invited to a ${eventType}!`;
-            let location = document.getElementById('venue').value;
+            let location = sanitizeInput(document.getElementById('venue').value);
 
             // Get platform details
-            const platformLink = document.getElementById('platform_link').value;
-            const accessCode = document.getElementById('access_code').value;
+            const platformLink = sanitizeInput(document.getElementById('platform_link').value);
+            const accessCode = sanitizeInput(document.getElementById('access_code').value);
 
             // Specific Logic
             if (eventType === 'Wedding') {
-                const brideGroom = document.getElementById('bride_groom_names').value;
+                const brideGroom = sanitizeInput(document.getElementById('bride_groom_names').value);
                 title = `Wedding: ${brideGroom}`;
-                if (!location) location = document.getElementById('reception_venue').value;
+                if (!location) location = sanitizeInput(document.getElementById('reception_venue').value);
                 
                 // Add wedding details to description
-                const ceremonyType = document.getElementById('ceremony_type').value;
-                const receptionVenue = document.getElementById('reception_venue').value;
-                const venue = document.getElementById('venue').value;
+                const ceremonyType = sanitizeInput(document.getElementById('ceremony_type').value);
+                const receptionVenue = sanitizeInput(document.getElementById('reception_venue').value);
+                const venue = sanitizeInput(document.getElementById('venue').value);
                 
                 if (brideGroom || ceremonyType || receptionVenue || venue) {
                     description += "\n\n";
@@ -255,17 +276,28 @@
                     if (venue) description += `Venue: ${venue}\n`;
                 }
             } else if (eventType === 'Birthday') {
-                title = `Birthday: ${document.getElementById('celebrant_name').value}`;
+                const celebrant = sanitizeInput(document.getElementById('celebrant_name').value);
+                title = `Birthday: ${celebrant}`;
+                const age = sanitizeInput(document.getElementById('age').value);
+                if (age) description += `\n\nAge: ${age}`;
             } else if (eventType === 'Concert') {
-                title = `Concert: ${document.getElementById('performer_name').value}`;
+                const performer = sanitizeInput(document.getElementById('performer_name').value);
+                title = `Concert: ${performer}`;
+                const seatCat = sanitizeInput(document.getElementById('seat_category').value);
+                const ticketPrice = sanitizeInput(document.getElementById('ticket_price').value);
+                if (seatCat || ticketPrice) {
+                    description += "\n\n";
+                    if (seatCat) description += `Seat Category: ${seatCat}\n`;
+                    if (ticketPrice) description += `Ticket Price: ${ticketPrice}\n`;
+                }
             } else if (eventType === 'Corporate') {
-                const comp = document.getElementById('company_name').value;
+                const comp = sanitizeInput(document.getElementById('company_name').value);
                 if (comp) title = `Event: ${comp}`;
                 
                 // Add corporate details to description
-                const speakers = document.getElementById('speaker_names').value;
-                const regLink = document.getElementById('registration_link').value;
-                const role = document.getElementById('role').value;
+                const speakers = sanitizeInput(document.getElementById('speaker_names').value);
+                const regLink = sanitizeInput(document.getElementById('registration_link').value);
+                const role = sanitizeInput(document.getElementById('role').value);
                 
                 if (comp || speakers || regLink || role) {
                     description += "\n\n";
@@ -307,8 +339,8 @@
             const downloadLink = document.getElementById('download-link');
             downloadLink.href = URL.createObjectURL(blob);
 
-            // Show Result
-            document.getElementById('result-title').innerText = title;
+            // Show Result - Use textContent for security (prevents script injection)
+            document.getElementById('result-title').textContent = title;
             document.getElementById('form-container').style.display = 'none';
             document.getElementById('result-container').style.display = 'block';
         }
@@ -323,11 +355,6 @@
             const end = format(new Date(date.getTime() + 60 * 60 * 1000)); // 1 hour duration default
             const now = format(new Date());
 
-            // Escape special characters in description for ICS format
-            const escapeDescription = (text) => {
-                return text.replace(/\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
-            };
-
             let ics = [
                 'BEGIN:VCALENDAR',
                 'VERSION:2.0',
@@ -337,16 +364,16 @@
                 `DTSTAMP:${now}`,
                 `DTSTART:${start}`,
                 `DTEND:${end}`,
-                `SUMMARY:${title}`,
-                `DESCRIPTION:${escapeDescription(description)}`,
-                `LOCATION:${location}`
+                `SUMMARY:${escapeICSField(title)}`,
+                `DESCRIPTION:${escapeICSField(description)}`,
+                `LOCATION:${escapeICSField(location)}`
             ];
 
             if (reminderMinutes) {
                 ics.push('BEGIN:VALARM');
                 ics.push('ACTION:DISPLAY');
                 ics.push('DESCRIPTION:Reminder');
-                ics.push(`TRIGGER:-PT${reminderMinutes}M`);
+                ics.push(`TRIGGER:-PT${sanitizeInput(reminderMinutes)}M`);
                 ics.push('END:VALARM');
             }
 
