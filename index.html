@@ -232,8 +232,22 @@
 
             // Specific Logic
             if (eventType === 'Wedding') {
-                title = `Wedding: ${document.getElementById('bride_groom_names').value}`;
+                const brideGroom = document.getElementById('bride_groom_names').value;
+                title = `Wedding: ${brideGroom}`;
                 if (!location) location = document.getElementById('reception_venue').value;
+                
+                // Add wedding details to description
+                const ceremonyType = document.getElementById('ceremony_type').value;
+                const receptionVenue = document.getElementById('reception_venue').value;
+                const venue = document.getElementById('venue').value;
+                
+                if (brideGroom || ceremonyType || receptionVenue || venue) {
+                    description += "\n\n";
+                    if (brideGroom) description += `Bride & Groom: ${brideGroom}\n`;
+                    if (ceremonyType) description += `Ceremony Type: ${ceremonyType}\n`;
+                    if (receptionVenue) description += `Reception Venue: ${receptionVenue}\n`;
+                    if (venue) description += `Venue: ${venue}\n`;
+                }
             } else if (eventType === 'Birthday') {
                 title = `Birthday: ${document.getElementById('celebrant_name').value}`;
             } else if (eventType === 'Concert') {
