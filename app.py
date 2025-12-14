@@ -13,6 +13,10 @@ app = Flask(__name__, template_folder='.')
 def index():
     return render_template('index.html')
 
+@app.route('/error')
+def error_page():
+    return render_template('error.html')
+
 @app.route('/generate', methods=['POST'])
 def generate():
     data = request.form
