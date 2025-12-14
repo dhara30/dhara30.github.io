@@ -667,12 +667,25 @@ textarea:focus {
     max-height: 0;
     overflow: hidden;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    transition: max-height 0.4s ease-out;
+    transition: max-height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    padding: 0;
 }
 
-.footer:hover .footer-info-section {
-    max-height: 400px;
-    overflow: visible;
+.footer-info-section.open {
+    max-height: 500px;
+    overflow: hidden;
+    padding: 1rem 0;
+}
+
+.footer-hint {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.footer-hint:hover {
+    opacity: 1;
+    transform: scale(1.05);
 }
 
 .footer-info-container {
@@ -972,9 +985,11 @@ textarea:focus {
         font-size: 0.75rem;
     }
 
-    /* Footer hover info - responsive for mobile */
-    .footer:hover .footer-info-section {
-        max-height: 600px;
+    /* Footer click-to-open info - responsive for mobile */
+    .footer-info-section.open {
+        max-height: 700px;
+        overflow: hidden;
+        padding: 1rem 0;
     }
 
     .footer-info-container {
