@@ -389,12 +389,34 @@
             document.getElementById('eventForm').reset();
             showFields(); // Reset visibility
         }
+
+        // Auto-scroll footer on hover - wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function () {
+            const footerHint = document.querySelector('.footer-hint');
+            const footer = document.querySelector('.footer');
+            let scrollTimeout;
+
+            if (footerHint && footer) {
+                footerHint.addEventListener('mouseenter', function () {
+                    clearTimeout(scrollTimeout);
+                    // Scroll footer into view at the bottom
+                    footer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                });
+
+                footerHint.addEventListener('mouseleave', function () {
+                    scrollTimeout = setTimeout(() => {
+                        // Scroll back up to main content
+                        document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 500);
+                });
+            }
+        });
     </script>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-social">
+            <div class="footer-section footer-left">
                 <a href="https://www.instagram.com/qrforevents.in" target="_blank" rel="noopener noreferrer"
                     class="social-link">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -404,12 +426,42 @@
                     @qrforevents.in
                 </a>
             </div>
-            <div class="footer-info">
+            <div class="footer-section footer-center">
                 <p>&copy; 2025 QR For Events. All rights reserved.</p>
-                <p class="footer-tagline">Create beautiful event invitations with QR codes</p>
+                <p class="footer-description">Create beautiful event invitations with QR codes</p>
+                <p class="footer-tagline">Made with ❤️ for events</p>
             </div>
-            <div class="footer-links">
-                <span>Made with ❤️ for events</span>
+            <div class="footer-section footer-right">
+                <span class="footer-hint"> Know How ?</span>
+            </div>
+        </div>
+        
+        <!-- Hover Info Section -->
+        <div class="footer-info-section">
+            <div class="footer-info-container">
+                <div class="footer-info-column">
+                    <h3>📖 How to Use</h3>
+                    <ol>
+                        <li>Select your event type</li>
+                        <li>Fill in event details & date</li>
+                        <li>Add venue & platform info</li>
+                        <li>Set reminder preferences</li>
+                        <li>Create your QR code</li>
+                        <li>Share or download</li>
+                    </ol>
+                </div>
+                <div class="footer-ethics-column">
+                    <h3>⚖️ Ethical Usage</h3>
+                    <p><strong>Use responsibly:</strong></p>
+                    <ul>
+                        <li>✅ Real events only</li>
+                        <li>✅ Accurate information</li>
+                        <li>✅ Respect privacy</li>
+                        <li>❌ No fake invitations</li>
+                        <li>❌ No spam/phishing</li>
+                        <li>❌ No impersonation</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </footer>
