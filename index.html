@@ -241,6 +241,19 @@
             } else if (eventType === 'Corporate') {
                 const comp = document.getElementById('company_name').value;
                 if (comp) title = `Event: ${comp}`;
+                
+                // Add corporate details to description
+                const speakers = document.getElementById('speaker_names').value;
+                const regLink = document.getElementById('registration_link').value;
+                const role = document.getElementById('role').value;
+                
+                if (comp || speakers || regLink || role) {
+                    description += "\n\n";
+                    if (comp) description += `Company: ${comp}\n`;
+                    if (speakers) description += `Speakers: ${speakers}\n`;
+                    if (role) description += `Department/Role: ${role}\n`;
+                    if (regLink) description += `Registration: ${regLink}\n`;
+                }
             } else if (eventType === 'Online') {
                 if (!location) location = platformLink;
             }
