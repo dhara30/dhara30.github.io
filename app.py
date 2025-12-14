@@ -58,17 +58,16 @@ def generate():
     platform_link = data.get('platform_link', '').strip()
     access_code = data.get('access_code', '').strip()
     
-    # Description with Online/Hybrid access details
+    # Description with Online access details
     base_desc = data.get('description', f"You are invited to a {event_type}!")
     
-    # Add platform details for Online events
-    if event_type == 'Online':
-        if platform_link or access_code:
-            base_desc = base_desc + "\n\n"
-            if platform_link:
-                base_desc += f"Join Link: {platform_link}\n"
-            if access_code:
-                base_desc += f"Access Code: {access_code}\n"
+    # Add platform details when Join Link or Access Code is provided
+    if platform_link or access_code:
+        base_desc = base_desc + "\n\n"
+        if platform_link:
+            base_desc += f"Join Link: {platform_link}\n"
+        if access_code:
+            base_desc += f"Access Code: {access_code}\n"
     
     e.description = base_desc
     

@@ -226,6 +226,10 @@
             let description = `You are invited to a ${eventType}!`;
             let location = document.getElementById('venue').value;
 
+            // Get platform details
+            const platformLink = document.getElementById('platform_link').value;
+            const accessCode = document.getElementById('access_code').value;
+
             // Specific Logic
             if (eventType === 'Wedding') {
                 title = `Wedding: ${document.getElementById('bride_groom_names').value}`;
@@ -238,7 +242,14 @@
                 const comp = document.getElementById('company_name').value;
                 if (comp) title = `Event: ${comp}`;
             } else if (eventType === 'Online') {
-                if (!location) location = document.getElementById('platform_link').value;
+                if (!location) location = platformLink;
+            }
+
+            // Add platform details to description if provided
+            if (platformLink || accessCode) {
+                description += "\n\n";
+                if (platformLink) description += `Join Link: ${platformLink}\n`;
+                if (accessCode) description += `Access Code: ${accessCode}\n`;
             }
 
             if (!location) location = 'TBD';
@@ -279,6 +290,11 @@
             const end = format(new Date(date.getTime() + 60 * 60 * 1000)); // 1 hour duration default
             const now = format(new Date());
 
+            // Escape special characters in description for ICS format
+            const escapeDescription = (text) => {
+                return text.replace(/\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
+            };
+
             let ics = [
                 'BEGIN:VCALENDAR',
                 'VERSION:2.0',
@@ -289,7 +305,7 @@
                 `DTSTART:${start}`,
                 `DTEND:${end}`,
                 `SUMMARY:${title}`,
-                `DESCRIPTION:${description}`,
+                `DESCRIPTION:${escapeDescription(description)}`,
                 `LOCATION:${location}`
             ];
 
