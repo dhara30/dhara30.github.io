@@ -70,7 +70,7 @@
 
         .attempt-info {
             background: #f0f4f8;
-            border-left: 4px solid #ff6b6b;
+            border-left: 4px solid #102a43;
             padding: 15px;
             border-radius: 8px;
             margin: 20px 0;
@@ -80,11 +80,12 @@
         .attempt-info p {
             margin: 5px 0;
             font-size: 14px;
+            color: #102a43;
         }
 
         .whatsapp-btn {
             display: inline-block;
-            background: linear-gradient(135deg, #25D366, #1fb956);
+            background: linear-gradient(135deg, #102a43, #243b53);
             color: white;
             padding: 15px 40px;
             border-radius: 50px;
@@ -95,12 +96,12 @@
             transition: all 0.3s;
             border: none;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+            box-shadow: 0 5px 15px rgba(16, 42, 67, 0.3);
         }
 
         .whatsapp-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+            box-shadow: 0 8px 20px rgba(16, 42, 67, 0.4);
         }
 
         .whatsapp-btn:active {
@@ -109,29 +110,104 @@
 
         .back-home {
             display: inline-block;
-            color: #6366f1;
+            color: #102a43;
             text-decoration: none;
             margin-top: 20px;
             font-size: 14px;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            font-weight: 600;
         }
 
         .back-home:hover {
-            color: #4f46e5;
+            color: #243b53;
             text-decoration: underline;
         }
 
         .code-display {
-            background: #e8f5e9;
-            border: 2px solid #4caf50;
+            background: #f0f4f8;
+            border: 2px solid #102a43;
             padding: 10px 15px;
             border-radius: 8px;
             margin: 15px 0;
             font-family: 'Courier New', monospace;
             font-size: 14px;
             font-weight: 600;
-            color: #2e7d32;
+            color: #102a43;
             word-break: break-all;
+        }
+
+        .coupon-section {
+            background: linear-gradient(135deg, rgba(16, 42, 67, 0.05), rgba(36, 59, 83, 0.05));
+            border: 2px solid #d9e2ec;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .coupon-section h3 {
+            color: #102a43;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .coupon-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .coupon-input-group input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #d9e2ec;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            color: #102a43;
+            background-color: #ffffff;
+        }
+
+        .coupon-input-group input:focus {
+            outline: none;
+            border-color: #102a43;
+            box-shadow: 0 0 0 3px rgba(16, 42, 67, 0.1);
+        }
+
+        .coupon-input-group button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #102a43, #243b53);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(16, 42, 67, 0.2);
+        }
+
+        .coupon-input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(16, 42, 67, 0.3);
+        }
+
+        .coupon-error {
+            color: #e74c3c;
+            font-size: 13px;
+            display: none;
+            margin-top: 8px;
+        }
+
+        .coupon-success {
+            color: #27ae60;
+            font-size: 13px;
+            display: none;
+            margin-top: 8px;
+            font-weight: 600;
         }
 
         .floating-shape {
@@ -161,8 +237,19 @@
                 <p id="limitInfo"></p>
             </div>
 
+            <div class="coupon-section">
+                <h3>✨ Have a New Coupon?</h3>
+                <p style="color: #666; margin: 0 0 15px 0; font-size: 13px;">Enter a new code to unlock more invitations!</p>
+                <div class="coupon-input-group">
+                    <input type="text" id="newCouponCode" placeholder="Enter new coupon code" maxlength="20">
+                    <button onclick="validateNewCoupon()">Apply Code</button>
+                </div>
+                <div class="coupon-error" id="couponError"></div>
+                <div class="coupon-success" id="couponSuccess"></div>
+            </div>
+
             <p style="font-size: 14px; color: #ff6b6b; margin: 15px 0;">
-                💡 <strong>Need more invitations?</strong> Contact us via WhatsApp!
+                💡 <strong>Don't have a coupon?</strong> Contact us via WhatsApp!
             </p>
 
             <a href="#" id="whatsappLink" class="whatsapp-btn">
@@ -174,6 +261,14 @@
     </div>
 
     <script>
+        // Valid coupon codes with limits
+        const VALID_CODES = {
+            '2026FREETHREE': { limit: 3, name: 'Free - 3 Invitations' },
+            '20CLIFIFTY26': { limit: 50, name: 'Standard - 50 Invitations' },
+            'HUNDREDCLI2026': { limit: 100, name: 'Premium - 100 Invitations' },
+            'OWNER2026ME': { limit: Infinity, name: 'Unlimited - Owner' }
+        };
+
         // WhatsApp support number (Update this with your actual WhatsApp number)
         const SUPPORT_WHATSAPP_NUMBER = '919327858678'; // Format: country code + number (e.g., 91 for India)
 
@@ -183,8 +278,65 @@
             return url.searchParams.get(name);
         }
 
-        // Initialize error page
+        // Validate new coupon code
+        function validateNewCoupon() {
+            const newCode = document.getElementById('newCouponCode').value.trim().toUpperCase();
+            const errorMsg = document.getElementById('couponError');
+            const successMsg = document.getElementById('couponSuccess');
+
+            // Clear previous messages
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            if (!newCode) {
+                errorMsg.textContent = '❌ Please enter a coupon code';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (!(newCode in VALID_CODES)) {
+                errorMsg.textContent = '❌ Invalid coupon code. Please check and try again.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Valid code - update localStorage
+            const codeInfo = JSON.parse(localStorage.getItem('codeInfo') || '{}');
+            const newCodeInfo = VALID_CODES[newCode];
+
+            // Update the code info with new limits
+            codeInfo.code = newCode;
+            codeInfo.name = newCodeInfo.name;
+            codeInfo.limit = newCodeInfo.limit;
+            codeInfo.used = 0; // Reset used count for new code
+            codeInfo.previousCode = localStorage.getItem('inviteCode');
+
+            // Save updated code info
+            localStorage.setItem('inviteCode', newCode);
+            localStorage.setItem('codeInfo', JSON.stringify(codeInfo));
+
+            // Show success message
+            successMsg.innerHTML = `✅ Code applied successfully! You now have <strong>${newCodeInfo.limit === Infinity ? 'unlimited' : newCodeInfo.limit}</strong> invitations.`;
+            successMsg.style.display = 'block';
+
+            // Redirect to home after 2 seconds
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        }
+
+        // Allow Enter key to submit
         document.addEventListener('DOMContentLoaded', function() {
+            const couponInput = document.getElementById('newCouponCode');
+            if (couponInput) {
+                couponInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        validateNewCoupon();
+                    }
+                });
+            }
+
+            // Initialize error page
             const reason = getUrlParameter('reason');
             const code = getUrlParameter('code');
             const codeInfo = JSON.parse(localStorage.getItem('codeInfo') || '{}');
@@ -204,6 +356,14 @@
                 const whatsappLink = `https://wa.me/${SUPPORT_WHATSAPP_NUMBER}?text=${whatsappMessage}`;
                 document.getElementById('whatsappLink').href = whatsappLink;
             }
+
+            // Focus on coupon input
+            setTimeout(() => {
+                const couponInput = document.getElementById('newCouponCode');
+                if (couponInput) {
+                    couponInput.focus();
+                }
+            }, 300);
         });
     </script>
 </body>
