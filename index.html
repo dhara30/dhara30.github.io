@@ -202,6 +202,7 @@
         <div class="download-buttons">
             <a href="#" id="download-link" class="download-link" download="invite.ics">📥 Download .ics file</a>
             <button onclick="downloadQRCode()" class="download-link">📸 Download QR Code</button>
+            <button onclick="addToCalendar()" class="download-link">📅 Add to Calendar</button>
         </div>
 
         <br><br>
@@ -220,6 +221,10 @@
         };
 
         const WHATSAPP_LINK = 'https://wa.me/918800000000?text=Hi%20I%20have%20exhausted%20my%20invitation%20attempts.%20Please%20help%21'; // Update with actual number
+
+        // Global variable to store ICS content for calendar operations
+        let currentICSContent = '';
+        let currentEventTitle = '';
 
         // Initialize code on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -494,6 +499,10 @@
             const downloadLink = document.getElementById('download-link');
             downloadLink.href = URL.createObjectURL(blob);
 
+            // Store ICS content globally for calendar operations
+            currentICSContent = icsContent;
+            currentEventTitle = title;
+
             // Show Result - Use textContent for security (prevents script injection)
             document.getElementById('result-title').textContent = title;
             document.getElementById('form-container').style.display = 'none';
@@ -567,6 +576,33 @@
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             }, 'image/png');
+        }
+
+        function addToCalendar() {
+            if (!currentICSContent) {
+                alert('⚠️ Event data not found. Please generate the QR code first.');
+                return;
+            }
+
+            // Create a data URI from ICS content
+            const icsBlob = new Blob([currentICSContent], { type: 'text/calendar;charset=utf-8' });
+            const icsUrl = URL.createObjectURL(icsBlob);
+
+            // Try to open with default calendar app
+            const link = document.createElement('a');
+            link.href = icsUrl;
+            link.download = `${currentEventTitle.replace(/[^a-z0-9]/gi, '_')}.ics`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Provide user feedback
+            setTimeout(() => {
+                alert('✅ Calendar file downloaded! Open it with your calendar app (Google Calendar, Outlook, Apple Calendar, etc.)');
+            }, 500);
+
+            // Clean up
+            setTimeout(() => URL.revokeObjectURL(icsUrl), 1000);
         }
 
         // Click to toggle footer details
