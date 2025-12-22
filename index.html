@@ -33,9 +33,17 @@
             <span class="modal-close" onclick="closeCodeModal()">&times;</span>
             <h2>Enter Your Access Code</h2>
             <p>Enter your code to create invitations</p>
-            <input type="text" id="codeInput" placeholder="Enter code" style="width: 100%; padding: 10px; margin: 15px 0; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-            <button onclick="validateAndStoreCode()" style="width: 100%; padding: 10px; background: #6366f1; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 600;">Verify Code</button>
-            <p id="codeError" style="color: red; margin-top: 10px; text-align: center; display: none;"></p>
+            <input type="text" id="codeInput" placeholder="Enter code" style="width: 100%; padding: 10px; margin: 15px 0; border: 2px solid #d9e2ec; border-radius: 5px; font-size: 16px; box-sizing: border-box; transition: all 0.3s;">
+            <button onclick="validateAndStoreCode()" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #102a43, #243b53); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s;">Verify Code</button>
+            <p id="codeError" style="color: #e74c3c; margin-top: 10px; text-align: center; display: none; font-size: 13px;"></p>
+            
+            <div style="background: linear-gradient(135deg, rgba(16, 42, 67, 0.05), rgba(36, 59, 83, 0.05)); border-left: 4px solid #102a43; padding: 12px; border-radius: 5px; margin-top: 20px; text-align: left;">
+                <p style="margin: 0 0 8px 0; color: #102a43; font-weight: 600; font-size: 13px;">💡 Don't have a code?</p>
+                <p style="margin: 0 0 10px 0; color: #666; font-size: 13px;">Try our free trial: <code style="background: white; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #102a43; border: 1px solid #d9e2ec;">2026FREETHREE</code></p>
+                <button onclick="tryFreeCode()" style="width: 100%; padding: 8px; background: linear-gradient(135deg, #102a43, #243b53); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.3s;">
+                    🎁 Try Free Version (3 invitations)
+                </button>
+            </div>
         </div>
     </div>
 
@@ -256,6 +264,15 @@
                 return;
             }
 
+            storeCodeAndProceed(code);
+        }
+
+        function tryFreeCode() {
+            const code = '2026FREETHREE';
+            storeCodeAndProceed(code);
+        }
+
+        function storeCodeAndProceed(code) {
             // Store code and initialize attempts
             localStorage.setItem('inviteCode', code);
             localStorage.setItem('codeInfo', JSON.stringify({
@@ -266,7 +283,7 @@
                 startDate: new Date().toISOString()
             }));
 
-            errorMsg.style.display = 'none';
+            document.getElementById('codeError').style.display = 'none';
             document.getElementById('codeModal').style.display = 'none';
             alert(`✅ Code verified! You have ${VALID_CODES[code].limit === Infinity ? 'unlimited' : VALID_CODES[code].limit} invitations.`);
         }
