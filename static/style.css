@@ -1265,3 +1265,78 @@ textarea:focus {
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
 }
+
+/* DOWNLOAD BUTTONS STYLING */
+.download-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.download-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #102a43, #243b53);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(16, 42, 67, 0.3);
+}
+
+.download-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(16, 42, 67, 0.4);
+}
+
+.download-link:active {
+    transform: translateY(-1px);
+}
+
+/* RESPONSIVE DOWNLOAD BUTTONS */
+@media (max-width: 600px) {
+    .download-buttons {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .download-link {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 13px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .mobile-scan-hint {
+        padding: 12px 15px;
+        margin: 15px 0;
+    }
+
+    .mobile-scan-hint p {
+        font-size: 13px;
+    }
+}
+
+/* iPhone SE and small devices (375px) */
+@media (max-width: 425px) {
+    .download-buttons {
+        gap: 8px;
+        margin: 15px auto;
+    }
+
+    .download-link {
+        padding: 11px 12px;
+        font-size: 12px;
+        border-radius: 6px;
+    }
+}
