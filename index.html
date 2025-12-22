@@ -189,9 +189,12 @@
             <!-- QR Code will be injected here -->
         </div>
 
-        <p>Scan this code to add the event to your calendar.</p>
+        <p>📱 Scan this code to add the event to your calendar.</p>
 
-        <a href="#" id="download-link" class="download-link" download="invite.ics">Download .ics file</a>
+        <div class="download-buttons">
+            <a href="#" id="download-link" class="download-link" download="invite.ics">📥 Download .ics file</a>
+            <button onclick="downloadQRCode()" class="download-link">📸 Download QR Code</button>
+        </div>
 
         <br><br>
         <button onclick="resetForm()" class="btn-submit"
@@ -498,6 +501,27 @@
             document.getElementById('result-container').style.display = 'none';
             document.getElementById('eventForm').reset();
             showFields(); // Reset visibility
+        }
+
+        function downloadQRCode() {
+            // Get the QR code canvas element
+            const qrCanvas = document.querySelector('#qr-code-display canvas');
+            if (!qrCanvas) {
+                alert('⚠️ QR code not found. Please try generating again.');
+                return;
+            }
+
+            // Convert canvas to blob and download
+            qrCanvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `qr-code-${Date.now()}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
         }
 
         // Click to toggle footer details
