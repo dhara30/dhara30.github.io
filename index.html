@@ -228,8 +228,11 @@
 
         function initializeCodeSystem() {
             const storedCode = localStorage.getItem('inviteCode');
-            if (!storedCode || !isValidCode(storedCode)) {
-                // Show code modal on first visit or if code is invalid
+            const exhaustedCoupons = JSON.parse(localStorage.getItem('exhaustedCoupons') || '[]');
+            
+            // Show modal if: no code stored, code is invalid, or code is exhausted
+            if (!storedCode || !isValidCode(storedCode) || exhaustedCoupons.includes(storedCode)) {
+                // Show code modal on first visit, if code is invalid, or if code is exhausted
                 setTimeout(() => showCodeModal(), 300);
             }
         }
@@ -260,6 +263,14 @@
 
             if (!isValidCode(code)) {
                 errorMsg.textContent = '❌ Invalid code. Please try again.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Check if code has been exhausted
+            const exhaustedCoupons = JSON.parse(localStorage.getItem('exhaustedCoupons') || '[]');
+            if (exhaustedCoupons.includes(code)) {
+                errorMsg.textContent = '❌ This coupon has already been used and exhausted. Please use a different coupon.';
                 errorMsg.style.display = 'block';
                 return;
             }
@@ -303,6 +314,16 @@
             if (codeInfo && codeInfo.limit !== Infinity) {
                 codeInfo.used = (codeInfo.used || 0) + 1;
                 localStorage.setItem('codeInfo', JSON.stringify(codeInfo));
+
+                // If coupon is now exhausted, add it to the exhaustedCoupons list
+                if (codeInfo.used >= codeInfo.limit) {
+                    const exhaustedCoupons = JSON.parse(localStorage.getItem('exhaustedCoupons') || '[]');
+                    const currentCode = localStorage.getItem('inviteCode');
+                    if (currentCode && !exhaustedCoupons.includes(currentCode)) {
+                        exhaustedCoupons.push(currentCode);
+                        localStorage.setItem('exhaustedCoupons', JSON.stringify(exhaustedCoupons));
+                    }
+                }
             }
         }
 
@@ -368,6 +389,13 @@
             // CHECK ATTEMPTS BEFORE PROCEEDING
             const { remaining, codeInfo } = checkAttemptsRemaining();
             if (remaining <= 0) {
+                // Mark code as exhausted before redirecting to error page
+                const exhaustedCoupons = JSON.parse(localStorage.getItem('exhaustedCoupons') || '[]');
+                const currentCode = localStorage.getItem('inviteCode');
+                if (currentCode && !exhaustedCoupons.includes(currentCode)) {
+                    exhaustedCoupons.push(currentCode);
+                    localStorage.setItem('exhaustedCoupons', JSON.stringify(exhaustedCoupons));
+                }
                 window.location.href = '/error?reason=exhausted&code=' + encodeURIComponent(codeInfo.code);
                 return;
             }
