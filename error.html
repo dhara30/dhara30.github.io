@@ -300,6 +300,14 @@
                 return;
             }
 
+            // Check if coupon has already been exhausted
+            const exhaustedCoupons = JSON.parse(localStorage.getItem('exhaustedCoupons') || '[]');
+            if (exhaustedCoupons.includes(newCode)) {
+                errorMsg.textContent = '❌ This coupon has already been used and exhausted. Please use a different coupon.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
             // Valid code - update localStorage
             const codeInfo = JSON.parse(localStorage.getItem('codeInfo') || '{}');
             const newCodeInfo = VALID_CODES[newCode];
