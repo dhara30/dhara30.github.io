@@ -1216,23 +1216,25 @@ textarea:focus {
     border-radius: 8px !important;
     font-size: 16px !important;
     box-sizing: border-box !important;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
+    background-color: #ffffff !important;
+    color: #102a43 !important;
 }
 
 #codeInput:focus {
     outline: none !important;
-    border-color: #6366f1 !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: #102a43 !important;
+    box-shadow: 0 0 0 3px rgba(16, 42, 67, 0.1) !important;
 }
 
 #codeInput::placeholder {
-    color: #bbb;
+    color: #999;
 }
 
 .modal-content button {
     width: 100% !important;
     padding: 12px !important;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    background: linear-gradient(135deg, #102a43, #243b53) !important;
     color: white !important;
     border: none !important;
     border-radius: 8px !important;
@@ -1240,11 +1242,12 @@ textarea:focus {
     font-size: 16px !important;
     font-weight: 600 !important;
     transition: transform 0.2s, box-shadow 0.2s !important;
+    box-shadow: 0 4px 12px rgba(16, 42, 67, 0.2) !important;
 }
 
 .modal-content button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 20px rgba(16, 42, 67, 0.4) !important;
 }
 
 .modal-content button:active {
